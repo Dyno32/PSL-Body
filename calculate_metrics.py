@@ -1,12 +1,3 @@
-"""
-Quality Metrics Calculator for 3D Pose Estimation
-Calculates accuracy metrics for landmark detection including:
-- Confidence/Visibility scores
-- Temporal jitter (smoothness)
-- Limb length consistency
-- Detection rate
-"""
-
 import numpy as np
 import json
 from typing import Dict, List, Any
@@ -363,4 +354,5 @@ if __name__ == "__main__":
     
     json_path = sys.argv[1]
     calculate_and_save_metrics(json_path)
+
 
