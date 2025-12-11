@@ -10,15 +10,12 @@ def process_video(video_path, output_dir):
     filename = os.path.basename(video_path)
     name_no_ext = os.path.splitext(filename)[0]
     
-    # Create output directory for this video
     video_output_dir = os.path.join(output_dir, name_no_ext)
     os.makedirs(video_output_dir, exist_ok=True)
     
-    # Output paths
     json_path = os.path.join(video_output_dir, "kps_3d.json")
     video_out_path = os.path.join(video_output_dir, "rendered_video.mp4")
     
-    # Initialize MediaPipe Holistic
     mp_holistic = mp.solutions.holistic
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
@@ -29,7 +26,6 @@ def process_video(video_path, output_dir):
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
-    # Video writer
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(video_out_path, fourcc, fps, (width, height))
     
@@ -46,14 +42,11 @@ def process_video(video_path, output_dir):
             if not ret:
                 break
             
-            # Convert to RGB
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
             
-            # Process
             results = holistic.process(image)
             
-            # Draw
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             
@@ -99,7 +92,6 @@ def process_video(video_path, output_dir):
     cap.release()
     out.release()
     
-    # Save keypoints JSON
     with open(json_path, 'w') as f:
         json.dump(keypoints_data, f)
     
@@ -118,7 +110,6 @@ def main():
     video_files = glob.glob(os.path.join(input_dir, "*.mp4"))
     print(f"Found {len(video_files)} videos in {input_dir}")
     
-    # Summary statistics
     all_metrics = []
     
     for video_file in video_files:
@@ -127,7 +118,6 @@ def main():
         print(f"{'='*70}")
         process_video(video_file, output_dir)
         
-        # Load metrics for summary
         name_no_ext = os.path.splitext(os.path.basename(video_file))[0]
         metrics_path = os.path.join(output_dir, name_no_ext, "quality_metrics.json")
         if os.path.exists(metrics_path):
@@ -138,13 +128,11 @@ def main():
                     'metrics': metrics
                 })
     
-    # Generate summary report
     if all_metrics:
         summary_path = os.path.join(output_dir, "summary_metrics.json")
         with open(summary_path, 'w') as f:
             json.dump(all_metrics, f, indent=2)
         
-        # Generate summary statistics
         generate_summary_report(all_metrics, output_dir)
         print(f"\n{'='*70}")
         print(f"Summary metrics saved to: {summary_path}")
@@ -157,8 +145,7 @@ def generate_summary_report(all_metrics: list, output_dir: str):
     report.append("SUMMARY REPORT - ALL VIDEOS")
     report.append("=" * 70)
     report.append(f"\nTotal Videos Processed: {len(all_metrics)}\n")
-    
-    # Aggregate statistics
+  
     body_detection_rates = []
     face_detection_rates = []
     left_hand_detection_rates = []
@@ -198,10 +185,11 @@ def generate_summary_report(all_metrics: list, output_dir: str):
     report_text = "\n".join(report)
     print(report_text)
     
-    # Save summary report
+
     summary_report_path = os.path.join(output_dir, "summary_report.txt")
     with open(summary_report_path, 'w') as f:
         f.write(report_text)
 
 if __name__ == "__main__":
     main()
+
