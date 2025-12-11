@@ -1,6 +1,4 @@
-"""
-Generate summary report from existing quality metrics
-"""
+
 import json
 import os
 import glob
@@ -9,7 +7,7 @@ import numpy as np
 def generate_summary_from_existing():
     output_dir = "output_mediapipe"
     
-    # Find all quality_metrics.json files
+
     metrics_files = glob.glob(os.path.join(output_dir, "*", "quality_metrics.json"))
     
     print(f"Found {len(metrics_files)} videos with metrics")
@@ -31,14 +29,13 @@ def generate_summary_from_existing():
         print("No metrics found!")
         return
     
-    # Generate summary report
+
     report = []
     report.append("=" * 70)
     report.append("SUMMARY REPORT - ALL VIDEOS")
     report.append("=" * 70)
     report.append(f"\nTotal Videos Processed: {len(all_metrics)}\n")
     
-    # Aggregate statistics
     body_detection_rates = []
     face_detection_rates = []
     left_hand_detection_rates = []
@@ -95,12 +92,12 @@ def generate_summary_from_existing():
     report_text = "\n".join(report)
     print(report_text)
     
-    # Save summary report
+   
     summary_report_path = os.path.join(output_dir, "summary_report.txt")
     with open(summary_report_path, 'w') as f:
         f.write(report_text)
     
-    # Save summary metrics JSON
+   
     summary_path = os.path.join(output_dir, "summary_metrics.json")
     with open(summary_path, 'w') as f:
         json.dump(all_metrics, f, indent=2)
@@ -110,3 +107,4 @@ def generate_summary_from_existing():
 
 if __name__ == "__main__":
     generate_summary_from_existing()
+
