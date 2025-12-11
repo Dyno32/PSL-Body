@@ -16,23 +16,22 @@ def process_video_with_mesh(video_path, output_dir, smplx_model_path):
     filename = os.path.basename(video_path)
     name_no_ext = os.path.splitext(filename)[0]
     
-    # Create output directory for this video
     video_output_dir = os.path.join(output_dir, name_no_ext)
     os.makedirs(video_output_dir, exist_ok=True)
     
-    # Output paths
+
     json_path = os.path.join(video_output_dir, "kps_3d.json")
     pkl_path = os.path.join(video_output_dir, "vibe_output.pkl")
     video_out_path = os.path.join(video_output_dir, "rendered_video.mp4")
     mesh_dir = os.path.join(video_output_dir, "meshes")
     os.makedirs(mesh_dir, exist_ok=True)
     
-    # Initialize MediaPipe Holistic
+    #Initialize MediaPipe Holistic
     mp_holistic = mp.solutions.holistic
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
     
-    # Initialize SMPL-X model
+    #Initialize SMPL-X model
     device = torch.device('cpu')
     smplx_model = smplx.create(
         smplx_model_path,
@@ -77,18 +76,16 @@ def process_video_with_mesh(video_path, output_dir, smplx_model_path):
             if not ret:
                 break
             
-            # Convert to RGB
+            
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
-            
-            # Process
+          
             results = holistic.process(image)
             
-            # Draw
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             
-            # Draw landmarks
+            #draw landmarks
             mp_drawing.draw_landmarks(
                 image, results.face_landmarks, mp_holistic.FACEMESH_TESSELATION,
                 landmark_drawing_spec=None,
@@ -119,9 +116,7 @@ def process_video_with_mesh(video_path, output_dir, smplx_model_path):
             frame_kps["right_hand"] = extract_landmarks(results.right_hand_landmarks)
             
             keypoints_data.append(frame_kps)
-            
-            # Fit SMPL-X (simplified - using default pose)
-            # In a full implementation, you would optimize these parameters to fit the MediaPipe keypoints
+           
             with torch.no_grad():
                 body_pose = torch.zeros([1, 63], dtype=torch.float32, device=device)
                 global_orient = torch.zeros([1, 3], dtype=torch.float32, device=device)
@@ -177,7 +172,7 @@ def process_video_with_mesh(video_path, output_dir, smplx_model_path):
     with open(pkl_path, 'wb') as f:
         pickle.dump(smplx_params, f)
     
-    print(f"✓ Saved {len(keypoints_data)} frames")
+    print(f" Saved {len(keypoints_data)} frames")
     print(f"  - Keypoints: {json_path}")
     print(f"  - SMPL-X params: {pkl_path}")
     print(f"  - Meshes: {mesh_dir}")
@@ -229,3 +224,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
