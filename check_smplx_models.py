@@ -1,6 +1,3 @@
-"""
-Check if SMPL-X models are installed and provide download instructions
-"""
 import os
 
 def check_smplx_models():
@@ -16,7 +13,7 @@ def check_smplx_models():
     print()
     
     if not os.path.exists(model_path):
-        print("❌ SMPL-X model directory not found!")
+        print("SMPL-X model directory not found!")
         print()
         print_download_instructions()
         return False
@@ -46,7 +43,7 @@ def check_smplx_models():
         print_download_instructions()
         return False
     
-    print("✅ All SMPL-X models are installed!")
+    print("All SMPL-X models are installed!")
     print()
     print("You can now run:")
     print("  venv_expose\\Scripts\\python process_videos_mesh.py")
@@ -76,3 +73,4 @@ def print_download_instructions():
 
 if __name__ == "__main__":
     check_smplx_models()
+
