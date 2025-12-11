@@ -15,7 +15,7 @@ class PoseQualityMetrics:
     """Calculate quality metrics for pose estimation"""
     
     def __init__(self):
-        # MediaPipe limb pairs (body landmarks)
+        #MediaPipe limb pairs (body landmarks)
         self.body_limbs = [
             (11, 12),  # Shoulders
             (11, 13),  # Left upper arm
@@ -31,7 +31,7 @@ class PoseQualityMetrics:
             (26, 28),  # Right shin
         ]
         
-        # Hand finger bones (for each hand)
+        # Hand finger bones
         self.hand_limbs = [
             (0, 1), (1, 2), (2, 3), (3, 4),      # Thumb
             (0, 5), (5, 6), (6, 7), (7, 8),      # Index
@@ -153,7 +153,7 @@ class PoseQualityMetrics:
                     length = np.linalg.norm(p2 - p1)
                     limb_lengths[limb_idx].append(length)
         
-        # Calculate limb consistency (lower std = more consistent)
+        #Calculate limb consistency
         limb_consistency = {}
         for limb_idx, lengths in limb_lengths.items():
             if lengths:
@@ -163,7 +163,7 @@ class PoseQualityMetrics:
                     'coefficient_of_variation': np.std(lengths) / np.mean(lengths) if np.mean(lengths) > 0 else 0
                 }
         
-        # Overall consistency score (lower is better)
+        # Overall consistency score 
         all_cvs = [v['coefficient_of_variation'] for v in limb_consistency.values()]
         
         return {
@@ -363,3 +363,4 @@ if __name__ == "__main__":
     
     json_path = sys.argv[1]
     calculate_and_save_metrics(json_path)
+
